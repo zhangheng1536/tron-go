@@ -47,9 +47,6 @@ func main() {
 
 	// Contact the server and print out its response.
 	address, _ := base58.From58Check(defaultAddress)
-	//if len(os.Args) > 1 {
-	//	address = os.Args[1]
-	//}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	r, err := c.GetAccount(ctx, &pbc.Account{Address: address})
