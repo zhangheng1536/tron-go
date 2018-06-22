@@ -26,25 +26,41 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	//pb "google.golang.org/grpc/examples/helloworld/helloworld"
-	"github.com/zhangheng1536/tron-go/common/base58"
-	pb "github.com/zhangheng1536/tron-go/gen/api"
-	pbc "github.com/zhangheng1536/tron-go/gen/core"
+	"fmt"
+	pb "github.com/tronprotocol/grpc-gateway/api"
+	pbc "github.com/tronprotocol/grpc-gateway/core"
+	"github.com/zhangheng1536/tron-go/base58"
+	"github.com/zhangheng1536/tron-go/common/hexutil"
+	"github.com/zhangheng1536/tron-go/crypto"
 )
 
 const (
-	address        = "34.214.241.188:50051"
-	defaultAddress = "TWsm8HtU2A5eEzoT8ev8yaoFjHsXLLrckb"
+	address        = "47.104.214.27:50051"
+	defaultAddress = "TRXSsMSfYgqhFhBzCYNHKD9adJrXpWZigb"
 )
 
 func main() {
 	// Set up a connection to the server.
+	//getAccount()
+	pk, err := crypto.GenerateKey()
+	if nil != err {
+		log.Fatalf("did not GenerateKey: %v", err)
+	}
+	fmt.Println("pk is :", hexutil.Encode(pk.D.Bytes()))
+	fmt.Println("pk is :", hexutil.Encode(pk.PublicKey.X.Bytes()))
+	fmt.Println("pk is :", hexutil.Encode(pk.PublicKey.Y.Bytes()))
+	fmt.Println("addressHex is :", hexutil.Encode(crypto.PubkeyToAddress(pk.PublicKey).Bytes()))
+	fmt.Println("addressCheck58 is :", base58.To58Check(crypto.PubkeyToAddress(pk.PublicKey).Bytes()))
+
+}
+
+func getAccount() {
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
 	c := pb.NewWalletClient(conn)
-
 	// Contact the server and print out its response.
 	address, _ := base58.From58Check(defaultAddress)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
