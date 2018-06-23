@@ -12,8 +12,8 @@ func From58Check(s string) ([]byte, error) {
 		return nil, nil
 	}
 	decodeData := decodeCheck[:len(decodeCheck)-4]
-	h0 := sha256Do(decodeData)
-	h1 := sha256Do(h0)
+	h0 := Sha256Do(decodeData)
+	h1 := Sha256Do(h0)
 	if h1[0] == decodeCheck[len(decodeData)] &&
 		h1[1] == decodeCheck[len(decodeData)+1] &&
 		h1[2] == decodeCheck[len(decodeData)+2] &&
@@ -23,15 +23,15 @@ func From58Check(s string) ([]byte, error) {
 	return nil, nil
 }
 func To58Check(input []byte) string {
-	h0 := sha256Do(input)
-	h1 := sha256Do(h0)
+	h0 := Sha256Do(input)
+	h1 := Sha256Do(h0)
 
 	inputCheck := input
 	inputCheck = append(inputCheck, h1[:4]...)
 
 	return base58.Encode(inputCheck)
 }
-func sha256Do(input []byte) []byte {
+func Sha256Do(input []byte) []byte {
 	h256h0 := sha256.New()
 	h256h0.Write(input)
 	h0 := h256h0.Sum(nil)
