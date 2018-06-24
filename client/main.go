@@ -38,7 +38,8 @@ import (
 )
 
 const (
-	address        = "34.233.96.87:50051"
+	//address        = "34.233.96.87:50051"
+	address        = "13.57.30.186:50051"
 	defaultAddress = "TTG4qqSRwUBFRvDrhUk1VR8MsMF4vURD8k"
 	toAddress      = "TPzvWP6qU44KxZKnGNR1idhbPNEmzguaTe"
 	privateKey     = "586C04B441E9B33FF1C621003ECC9F9953D68BFB8A837971EA33A6DFB727D1B9"
@@ -50,8 +51,33 @@ func main() {
 	//createTransaction()
 	//findAccount()
 	//sendCoin()
-	getBlance()
+	//getBlance()
+	testNum()
 
+}
+
+func testNum() {
+	conn, err := grpc.Dial(address, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	c := pb.NewDatabaseClient(conn)
+	defer func() {
+		fmt.Println("-------end--------")
+		conn.Close()
+	}()
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := c.GetNowBlock(ctx, &pb.EmptyMessage{})
+	if err != nil {
+		log.Fatalf("could not greet: %v", err)
+	}
+	log.Printf("now num: %d", uint64(r.GetBlockHeader().GetRawData().Number))
+	dp, err := c.GetDynamicProperties(ctx, &pb.EmptyMessage{})
+	if err != nil {
+		log.Fatalf("could not greet: %v", err)
+	}
+	log.Printf("solidity num: %d", uint64(dp.LastSolidityBlockNum))
 }
 
 func getBlance() {
