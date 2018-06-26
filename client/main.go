@@ -131,6 +131,9 @@ func sendCoin() {
 
 func findAccount() {
 	log.Println("start find address...")
+
+	pk := createPK()
+	saveAcc(pk)
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
