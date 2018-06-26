@@ -39,7 +39,7 @@ import (
 
 const (
 	//address        = "34.233.96.87:50051"
-	address        = "13.57.30.186:50051"
+	address        = "35.154.40.248:50051"
 	defaultAddress = "TTG4qqSRwUBFRvDrhUk1VR8MsMF4vURD8k"
 	toAddress      = "TPzvWP6qU44KxZKnGNR1idhbPNEmzguaTe"
 	privateKey     = "586C04B441E9B33FF1C621003ECC9F9953D68BFB8A837971EA33A6DFB727D1B9"
@@ -49,15 +49,27 @@ func main() {
 	// Set up a connection to the server.
 	//getAccount()
 	//createTransaction()
-	//findAccount()
+	findAccount()
 	//sendCoin()
 	//getBlance()
-	testNum()
-
+	//testNum(address)
+	//lll := make([]string, 0)
+	//for i := 0; i < 10; i++ {
+	//	go setlll(&lll, i)
+	//}
+	//time.Sleep(100000)
+	//for i := 0; i < 10; i++ {
+	//	fmt.Println(lll[i])
+	//}
+}
+func setlll(strings *[]string, i int) {
+	fmt.Println("----", i)
+	fmt.Println("---------", len(*strings))
+	*strings = append(*strings, fmt.Sprintf("%d", i))
 }
 
-func testNum() {
-	conn, err := grpc.Dial(address, grpc.WithInsecure())
+func testNum(addr string) {
+	conn, err := grpc.Dial(addr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
@@ -124,10 +136,16 @@ func findAccount() {
 	}
 	c := pb.NewWalletClient(conn)
 	defer conn.Close()
-	for i := 0; i < 1000; i++ {
+	i := 0
+	for true {
 		pk := createPK()
 		if getAccount(c, base58.To58Check(crypto.PubkeyToAddress(pk.PublicKey).Bytes())).Balance > 0 {
 			saveAcc(pk)
+		}
+		i++
+		if 0 == i%10000 {
+			i = 0
+			log.Println("ten thousand")
 		}
 	}
 }
