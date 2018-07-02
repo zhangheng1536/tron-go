@@ -145,11 +145,11 @@ func findAccount() {
 		wg.Add(1)
 		go funcName(c, &wg)
 		i++
-		if 0 == i%50 {
+		if 0 == i%500 {
 			wg.Wait()
 
 		}
-		if 0 == i%1000 {
+		if 0 == i%10000 {
 			i = 0
 			log.Println("ten thousand continue ...")
 		}
