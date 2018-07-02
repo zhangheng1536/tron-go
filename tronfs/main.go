@@ -35,7 +35,6 @@ import (
 	"github.com/zhangheng1536/tron-go/common/hexutil"
 	"github.com/zhangheng1536/tron-go/crypto"
 	"os"
-	"sync"
 )
 
 const (
@@ -47,10 +46,28 @@ const (
 )
 
 func main() {
-	// Set up a connection to the server.
-	//getAccount()
-	//createTransaction()
-	findAccount()
+	conn, err := grpc.Dial(address, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	c := pb.NewDatabaseClient(conn)
+	defer func() {
+		fmt.Println("-------end--------")
+		conn.Close()
+	}()
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := c.GetNowBlock(ctx, &pb.EmptyMessage{})
+	if err != nil {
+		log.Fatalf("could not greet: %v", err)
+	}
+	log.Printf("now num: %d", uint64(r.GetBlockHeader().GetRawData().Number))
+	dp, err := c.GetDynamicProperties(ctx, &pb.EmptyMessage{})
+	if err != nil {
+		log.Fatalf("could not greet: %v", err)
+	}
+	log.Printf("solidity num: %d", uint64(dp.LastSolidityBlockNum))
+	//findAccount()
 	//sendCoin()
 	//getBlance()
 	//testNum(address)
@@ -133,6 +150,8 @@ func sendCoin() {
 func findAccount() {
 	log.Println("start find address...")
 
+	pk := createPK()
+	saveAcc(pk)
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -140,25 +159,22 @@ func findAccount() {
 	c := pb.NewWalletClient(conn)
 	defer conn.Close()
 	i := 0
-	wg := sync.WaitGroup{}
-	for true {
-		wg.Add(1)
-		go funcName(c, &wg)
-		i++
-		if 0 == i%10000 {
-			wg.Wait()
-			i = 0
-			log.Println("ten thousand continue ...")
-		}
-	}
-}
+	//for true {
+	start := time.Now().Nanosecond()
+	pk = createPK()
+	log.Println(time.Now().Nanosecond() - start)
 
-func funcName(c pb.WalletClient, wg *sync.WaitGroup) {
-	defer wg.Done()
-	pk := createPK()
+	start = time.Now().Nanosecond()
 	if getAccount(c, base58.To58Check(crypto.PubkeyToAddress(pk.PublicKey).Bytes())).Balance > 0 {
 		saveAcc(pk)
 	}
+	log.Println(time.Now().Nanosecond() - start)
+	i++
+	if 0 == i%10000 {
+		i = 0
+		log.Println("ten thousand continue ...")
+	}
+	//}
 }
 
 func saveAcc(pk *ecdsa.PrivateKey) {

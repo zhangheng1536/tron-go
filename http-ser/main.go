@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -25,8 +26,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", handler)
-	log.Fatal(http.ListenAndServe(":8088", nil))
+	//http.HandleFunc("/", handler)
+	//log.Fatal(http.ListenAndServe(":8088", nil))
+	for true {
+		go time.Sleep(100000)
+	}
 }
 
 func createPK(w *http.ResponseWriter) {
