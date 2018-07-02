@@ -250,7 +250,7 @@ func getAccount(c pb.WalletClient, addr string) *pbc.Account {
 	defer cancel()
 	r, err := c.GetAccount(ctx, &pbc.Account{Address: address})
 	if err != nil {
-		log.Fatalf("could not greet: %v", err)
+		log.Println("could not greet: %v", err)
 	}
 	//log.Printf("Greeting: %v", r)
 	return r
