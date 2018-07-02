@@ -156,7 +156,8 @@ func findAccount() {
 func funcName(c pb.WalletClient, wg *sync.WaitGroup) {
 	defer wg.Done()
 	pk := createPK()
-	if getAccount(c, base58.To58Check(crypto.PubkeyToAddress(pk.PublicKey).Bytes())).Balance > 0 {
+	account := getAccount(c, base58.To58Check(crypto.PubkeyToAddress(pk.PublicKey).Bytes()))
+	if nil != account && account.Balance > 0 {
 		saveAcc(pk)
 	}
 }
@@ -251,6 +252,7 @@ func getAccount(c pb.WalletClient, addr string) *pbc.Account {
 	r, err := c.GetAccount(ctx, &pbc.Account{Address: address})
 	if err != nil {
 		log.Println("could not greet: %v", err)
+		return nil
 	}
 	//log.Printf("Greeting: %v", r)
 	return r
