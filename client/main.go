@@ -40,7 +40,7 @@ import (
 
 const (
 	//address        = "34.233.96.87:50051"
-	address        = "34.216.106.30:50051"
+	address        = "18.196.99.16:50051"
 	defaultAddress = "TTG4qqSRwUBFRvDrhUk1VR8MsMF4vURD8k"
 	toAddress      = "TPzvWP6qU44KxZKnGNR1idhbPNEmzguaTe"
 	privateKey     = "586C04B441E9B33FF1C621003ECC9F9953D68BFB8A837971EA33A6DFB727D1B9"
