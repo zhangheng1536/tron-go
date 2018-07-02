@@ -145,7 +145,7 @@ func findAccount() {
 		wg.Add(1)
 		go funcName(c, &wg)
 		i++
-		if 0 == i%500 {
+		if 0 == i%200 {
 			wg.Wait()
 
 		}
