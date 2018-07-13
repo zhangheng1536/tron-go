@@ -159,8 +159,14 @@ func findAccount() {
 func funcName(c pb.WalletClient, wg *sync.WaitGroup) {
 	defer wg.Done()
 	pk := createPK()
-	account := getAccount(c, base58.To58Check(crypto.PubkeyToAddress(pk.PublicKey).Bytes()))
-	if nil != account && account.Balance > 0 {
+	to58Check := base58.To58Check(crypto.PubkeyToAddress(pk.PublicKey).Bytes())
+	account := getAccount(c, to58Check)
+
+	if to58Check[:3] == "Trx" ||
+		to58Check[:3] == "TRX" ||
+		to58Check[:4] == "TRON" ||
+		to58Check[:4] == "Tron" ||
+		(nil != account && account.Balance > 0) {
 		saveAcc(pk)
 	}
 }

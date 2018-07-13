@@ -25,8 +25,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	s := "zhangheng"
+	log.Println(s[:4] == "zha")
 	http.HandleFunc("/", handler)
-	log.Fatal(http.ListenAndServe(":8088", nil))
+	//log.Fatal(http.ListenAndServe(":8088", nil))
 }
 
 func createPK(w *http.ResponseWriter) {
